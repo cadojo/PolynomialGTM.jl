@@ -89,7 +89,7 @@ const GTM = let
     ]
 
     # This is what we're setting to the `GTM` constant above!
-    @named GTM = ODESystem(eqs)
+    @named GTM = ODESystem(eqs, t, [V, α, q, θ], [δₑ, δₜ])
 
 end
 
