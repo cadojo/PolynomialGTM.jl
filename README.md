@@ -1,4 +1,4 @@
-# PolynomialGTM
+# PolynomialGTM.jl
 An unofficial implementation of publicly available approximated polynomial models for NASA's Generic Transport Model aircraft.
 
 ## Overview
