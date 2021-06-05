@@ -13,7 +13,8 @@ as a `ModelingToolkit.ODESystem`.
 
 References:
 
-* Chakraborty et al (TODO add link here!)
+* [Chakraborty et al](https://www.sciencedirect.com/science/article/abs/pii/S0967066110002595)
+* [Replicated-ROA-Analysis](https://github.com/cadojo/Replicated-ROA-Analysis)
 """
 const GTM = let 
         
