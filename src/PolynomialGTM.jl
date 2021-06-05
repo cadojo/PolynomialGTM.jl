@@ -11,12 +11,21 @@ Here, `GTM` is an extension of `ModelingToolkit` which
 provides one publicly available polynomial approximations
 as a `ModelingToolkit.ODESystem`. 
 
+The default initial conditions are one trim condition.
+Two trim conditions for these polynomial-approximated
+dynamics are shown below.
+
+```julia
+trim₁ = [[29.6, deg2rad(9), 0.0, deg2rad(9)],   [deg2rad(0.68), 12.7]]  
+trim₂ = [[25.0, deg2rad(18), 0.0, deg2rad(18)], [deg2rad(-7.2), 59]]
+```
+
 References:
 
-* [Chakraborty et al](https://www.sciencedirect.com/science/article/abs/pii/S0967066110002595)
-* [Replicated-ROA-Analysis](https://github.com/cadojo/Replicated-ROA-Analysis)
+- [Chakraborty et al](https://www.sciencedirect.com/science/article/abs/pii/S0967066110002595)
+- [Joe Carpinelli](https://github.com/cadojo/Replicated-ROA-Analysis)
 """
-const GTM = let 
+GTM = let 
         
     # First, let's define the necessary parameters 
     # and variables for modeling the longitudinal
@@ -89,8 +98,14 @@ const GTM = let
         d(θ) ~ q
     ]
 
+    # Let's set some default values, so we can plug this system directly 
+    # into `ODEProblem` and perform quick analysis. Note that what we're 
+    # doing here is setting one equilibrium position as a default 
+    # initial condition if no arguments are provided to `ODEProblem`!
+    defaults = Dict(V=>29.6, α=>deg2rad(9), q=>0.0, θ=>deg2rad(0), δₑ=>deg2rad(0.68), δₜ=>12.7)
+
     # This is what we're setting to the `GTM` constant above!
-    @named GTM = ODESystem(eqs, t, [V, α, q, θ], [δₑ, δₜ])
+    @named GTM = ODESystem(eqs, t, [V, α, q, θ], [δₑ, δₜ], defaults=defaults)
 
 end
 
