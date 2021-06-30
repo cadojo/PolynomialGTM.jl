@@ -1,8 +1,10 @@
 module PolynomialGTM
 
 using ModelingToolkit 
+using RuntimeGeneratedFunctions
+RuntimeGeneratedFunctions.init(@__MODULE__)
 
-export GTM
+export GTM, GenerateGTMVectorField
 
 """
 NASA's Generic Transport Model can be approximated 
@@ -107,6 +109,38 @@ GTM = let
     # This is what we're setting to the `GTM` constant above!
     @named GTM = ODESystem(eqs, t, [V, α, q, θ], [δₑ, δₜ], defaults=defaults)
 
+end
+
+"""
+    GTMVectorField = GenerateGTMVectorField() # with bounds checking on
+    GTMVectorField = GenerateGTMVectorField(; checkbounds = false) # without bounds checking
+
+Returns `DifferentialEquations`-compatible `ODEFunction` for GTM dynamics.
+Note that this function has several methods, including an in-place 
+method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
+conventions. All `kwargs` are passed directly to `Symbolics.build_function`.
+One helpful `kwarg` value might be the `checkbounds` argument, which 
+enables or disables bounds checking within the `ODEFunction`.
+
+Note that setting `checkbounds = false` will have performance improvements, but 
+your program will then be vulnerable to memory errors, and segmentation faults.
+Usually, you _don't_ have to worry about memory errors in Julia, because 
+bounds checking is enabled by default throughout the language. While `ODEFunction`
+disables bounds checking by default, this function has the default value
+for `checkbounds` as `true` for simplicity.
+"""
+function GenerateGTMVectorField(; jac = true, tgrad = true, eval_expression=false, eval_module=@__MODULE__, kwargs...)
+    defaults = (; checkbounds = true)
+
+    options  = merge(defaults, kwargs)
+    return ODEFunction(
+            GTM; 
+            jac             = jac, 
+            tgrad           = tgrad, 
+            eval_expression = eval_expression, 
+            eval_module     = eval_module, 
+            options...
+    )
 end
 
 end # module
