@@ -1,12 +1,13 @@
 name = "PolynomialGTM"
 uuid = "d0486fca-abc3-4e94-983c-1d27790b80a4"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "0.1.2"
+version = "0.1.1"
 
 [deps]
 ModelingToolkit = "961ee093-0014-501f-94e3-6117800e7a78"
 RuntimeGeneratedFunctions = "7e49a35a-f44a-4d26-94aa-eba1b4ca6b47"
 
 [compat]
+RuntimeGeneratedFunctions = "0.5"
 ModelingToolkit = "5"
 julia = "1"
