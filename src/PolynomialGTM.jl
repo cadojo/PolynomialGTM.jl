@@ -4,7 +4,7 @@ using ModelingToolkit
 using RuntimeGeneratedFunctions
 RuntimeGeneratedFunctions.init(@__MODULE__)
 
-export GTM, GenerateGTMDynamics
+export GTM, generate_gtm_dynamics
 
 """
 NASA's Generic Transport Model can be approximated 
@@ -107,7 +107,7 @@ GTM = let
     defaults = Dict(V=>29.6, α=>deg2rad(9), q=>0.0, θ=>deg2rad(0), δₑ=>deg2rad(0.68), δₜ=>12.7)
 
     # This is what we're setting to the `GTM` constant above!
-    @named GTM = ODESystem(eqs, t, [V, α, q, θ], [δₑ, δₜ], controls=[δₑ, δₜ], defaults=defaults)
+    @named GTM = ODESystem(eqs, t, [V, α, q, θ], [δₑ, δₜ], defaults=defaults)
 
 end
 
@@ -127,18 +127,14 @@ your program will then be vulnerable to memory errors, and segmentation faults.
 Usually, you _don't_ have to worry about memory errors in Julia, because 
 bounds checking is enabled by default throughout the language. While `ODEFunction`
 disables bounds checking by default, this function has the default value
-for `checkbounds` as `true` for simplicity.
+for `checkbounds` as `true` for safety.
 """
-function GenerateGTMDynamics(; jac = true, tgrad = true, eval_expression=false, eval_module=@__MODULE__, kwargs...)
-    defaults = (; checkbounds = true)
-
+function generate_gtm_dynamics(; kwargs...)
+    defaults = (; jac = true, tgrad = true, eval_expression=false, eval_module=@__MODULE__, checkbounds = true)
     options  = merge(defaults, kwargs)
+    
     return ODEFunction(
             GTM; 
-            jac             = jac, 
-            tgrad           = tgrad, 
-            eval_expression = eval_expression, 
-            eval_module     = eval_module, 
             options...
     )
 end
