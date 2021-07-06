@@ -369,7 +369,9 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[ModelingToolkit]]
 deps = ["AbstractTrees", "ArrayInterface", "ConstructionBase", "DataStructures", "DiffEqBase", "DiffEqJump", "DiffRules", "Distributed", "Distributions", "DocStringExtensions", "DomainSets", "IfElse", "JuliaFormatter", "LabelledArrays", "Latexify", "Libdl", "LightGraphs", "LinearAlgebra", "MacroTools", "NaNMath", "NonlinearSolve", "RecursiveArrayTools", "Reexport", "Requires", "RuntimeGeneratedFunctions", "SafeTestsets", "SciMLBase", "Serialization", "Setfield", "SparseArrays", "SpecialFunctions", "StaticArrays", "SymbolicUtils", "Symbolics", "UnPack", "Unitful"]
-git-tree-sha1 = "7344cc0ba1e2c4933f9b2545b8860483a9acf0d4"
+git-tree-sha1 = "24e889274a1c9d6b7b549f69b81742f87be655d5"
+repo-rev = "master"
+repo-url = "https://github.com/SciML/ModelingToolkit.jl.git"
 uuid = "961ee093-0014-501f-94e3-6117800e7a78"
 version = "5.21.0"
 
