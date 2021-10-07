@@ -1,17 +1,59 @@
+"""
+Provides unofficial implementations (in the form of `ODESystem` and 
+`ODEFunction` instances) of a polynomial approximation for longitudinal 
+aircraft dynamics. Specifically, these models approximate NASA's 
+Generic Transport Model – a radio-controlled, sub-scale model aircraft which 
+is used flight control research. These publicly available equations were published by 
+[Chakraborty et al](https://www.sciencedirect.com/science/article/abs/pii/S0967066110002595).
+
+# Extended help
+
+## License
+
+$(LICENSE)
+
+## Exports
+
+$(EXPORTS)
+
+## Imports
+
+$(IMPORTS)
+"""
 module PolynomialGTM
 
+using Memoize
+using Symbolics
+using LinearAlgebra
 using ModelingToolkit 
-using RuntimeGeneratedFunctions
-RuntimeGeneratedFunctions.init(@__MODULE__)
+using DocStringExtensions
 
-export GTM, generate_gtm_dynamics
+@template (FUNCTIONS, METHODS, MACROS) =
+    """
+    $(SIGNATURES)
+
+    $(DOCSTRING)
+    """
+
+@template (TYPES, CONSTANTS) =
+    """
+    $(TYPEDEF)
+
+    $(DOCSTRING)
+    """
+
+export GTM, GTMFunction
 
 """
 NASA's Generic Transport Model can be approximated 
 (near select flight conditions) as a polynomial model.
-Here, `GTM` is an extension of `ModelingToolkit` which
-provides one publicly available polynomial approximations
-as a `ModelingToolkit.ODESystem`. 
+Here, `GTM` is a `ModelingToolkit.ODESystem` which
+provides publicly available polynomial approximations
+for GTM longitudinal flight dynamics.
+
+# Extended Help
+
+## Initial Conditions
 
 The default initial conditions are one trim condition.
 Two trim conditions for these polynomial-approximated
@@ -22,12 +64,17 @@ trim₁ = [[29.6, deg2rad(9), 0.0, deg2rad(9)],   [deg2rad(0.68), 12.7]]
 trim₂ = [[25.0, deg2rad(18), 0.0, deg2rad(18)], [deg2rad(-7.2), 59]]
 ```
 
-References:
+## Usage
+
+```julia
+model = GTM()
+```
+## References:
 
 - [Chakraborty et al](https://www.sciencedirect.com/science/article/abs/pii/S0967066110002595)
 - [Joe Carpinelli](https://github.com/cadojo/Replicated-ROA-Analysis)
 """
-GTM = let 
+@memoize function GTM(; stm=false, structural_simplify=true, name=:GTM)
         
     # First, let's define the necessary parameters 
     # and variables for modeling the longitudinal
@@ -35,7 +82,9 @@ GTM = let
 
     @parameters t δₑ δₜ
     @variables V(t) α(t) q(t) θ(t) 
-    d = Differential(t)
+    δ = Differential(t)
+    x = [V, α, q, θ]
+    p = [δₑ, δₜ]
 
     # Great! Now, we'll need to hard-code in the polynomial 
     # approximations the longitudinal dynamics.
@@ -44,7 +93,7 @@ GTM = let
 
         # Damn Unicode and its variable character font width!!!
 
-        d(V) ~  1.233e-8*V^4*q^2 + 4.853e-9*α^3*δₜ^3 	  	+ 
+        δ(V) ~  1.233e-8*V^4*q^2 + 4.853e-9*α^3*δₜ^3 	  	+ 
                 3.705e-5*V^3*α*q - 2.184e-6*V^3*q^2 		+ 
                 2.203e-2*V^2*α^3 - 2.836e-6*α^3*δₜ^2 	  	+ 
                 3.885e-7*α^2*δₜ^3 - 1.069e-6*V^3*q 	  		- 
@@ -60,7 +109,7 @@ GTM = let
                 2.142e-1*α^2 + 1.222e-3*α*δₜ 			  	+ 
                 4.541e-4*δₜ^2 + 9.823*α + 3.261e-2*δₜ 	    - 
                 9.807*θ + 4.282e-1,
-        d(α) ~ -3.709e-11*V^5*q^2 + 6.869e-11*V*α^3*δₜ^3 	+ 
+        δ(α) ~ -3.709e-11*V^5*q^2 + 6.869e-11*V*α^3*δₜ^3 	+ 
                 7.957e-10*V^4*α*q + 9.860e-9*V^4*q^2 		+ 
                 1.694e-5*V^3*α^3 - 4.015e-8*V*α^3*δₜ^2 		 - 
                 7.722e-12*V*α^2*δₜ^3 - 6.086e-9*α^3*δₜ^3 	 - 
@@ -89,7 +138,7 @@ GTM = let
                 1.532e-3*α*δₜ + 4.608e-1*α*θ - 2.304e-1*θ^2 + 
                 7.997e-7*δₜ^2 - 5.210e-3*V - 2.013e-2*α 	+ 
                 5.744e-5*δₜ + q + 4.616e-1,
-        d(q) ~ -6.573e-9*V^5*q^3 + 1.747e-6*V^4*q^3 	    - 
+        δ(q) ~ -6.573e-9*V^5*q^3 + 1.747e-6*V^4*q^3 	    - 
                 1.548e-4*V^3*q^3 - 3.569e-3*V^2*α^3 	    + 
                 4.571e-3*V^2*q^3 + 4.953e-5*V^3*q 		    + 
                 9.596e-3*V^2*α^2 + 2.049e-2*V^2*α*δₑ 	    - 
@@ -97,46 +146,84 @@ GTM = let
                 4.388e-3*V^2*q - 2.594e-7*δₜ^3 			    + 
                 2.461e-3*V^2 + 1.516e-4*δₜ^2 + 1.089e-2*δₜ 	 + 
                 1.430e-1,
-        d(θ) ~ q
+        δ(θ) ~ q
     ]
 
     # Let's set some default values, so we can plug this system directly 
     # into `ODEProblem` and perform quick analysis. Note that what we're 
     # doing here is setting one equilibrium position as a default 
     # initial condition if no arguments are provided to `ODEProblem`!
-    defaults = Dict(V=>29.6, α=>deg2rad(9), q=>0.0, θ=>deg2rad(0), δₑ=>deg2rad(0.68), δₜ=>12.7)
+    defaults = Dict(
+        V  => 29.6, 
+        α  => deg2rad(9), 
+        q  => 0.0, 
+        θ  => deg2rad(0), 
+        δₑ => deg2rad(0.68), 
+        δₜ => 12.7
+    )
 
-    # This is what we're setting to the `GTM` constant above!
-    @named GTM = ODESystem(eqs, t, [V, α, q, θ], [δₑ, δₜ]; controls=[δₑ, δₜ], defaults=defaults)
+    # If state transition matrix dynamics are enabled, append 
+    # the dynamics to our equations of motion, append the 
+    # state variables to our state vector, and append default
+    # values (the identity matrix) to the defaults field!
+    if stm
+        @variables Φ[1:4,1:4](t)
+        Φ = Symbolics.scalarize(Φ)
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), x)
+        
+        LHS = map(δ, Φ)
+        RHS = map(simplify, A * Φ)
+    
+        eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in 1:length(LHS)])
+    
+        for ϕ in vec(Φ)
+            push!(x, ϕ)
+        end
 
+        for (ϕ, i) in zip(vec(Φ), vec(Matrix(I(4))))
+            defaults[ϕ] = i
+        end    
+    end
+
+    # Model name
+    if string(name) == "GTM" && stm 
+        modelname = Symbol("GTMWithSTM")
+    else
+        modelname = name
+    end
+
+    # Make the model and return
+    model = ODESystem(eqs, t, x, p; defaults=defaults, name=Symbol(modelname))
+    return structural_simplify ? ModelingToolkit.structural_simplify(model) : model
 end
 
 """
-    GTMVectorField = GenerateGTMVectorField() # with bounds checking on
-    GTMVectorField = GenerateGTMVectorField(; checkbounds = false) # without bounds checking
+Returns a `DifferentialEquations`-compatible `ODEFunction` for GTM dynamics.
+The `stm`, `structural_simplify`, and `name` keyword arguments are passed
+to `GTM`. All other keyword arguments are passed directly to `ODEFunction`.
 
-Returns `DifferentialEquations`-compatible `ODEFunction` for GTM dynamics.
-Note that this function has several methods, including an in-place 
+# Extended Help
+
+## Usage
+
+Note that this `ODEFunction` output has several methods, including an in-place 
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
-conventions. All `kwargs` are passed directly to `Symbolics.build_function`.
-One helpful `kwarg` value might be the `checkbounds` argument, which 
-enables or disables bounds checking within the `ODEFunction`.
+conventions. 
 
-Note that setting `checkbounds = false` will have performance improvements, but 
-your program will then be vulnerable to memory errors, and segmentation faults.
-Usually, you _don't_ have to worry about memory errors in Julia, because 
-bounds checking is enabled by default throughout the language. While `ODEFunction`
-disables bounds checking by default, this function has the default value
-for `checkbounds` as `true` for safety.
+```julia
+f = GTMFunction()
+let u = randn(4), p = randn(2), t = rand()
+    f(u,p,t)
+end
+```
 """
-function generate_gtm_dynamics(; kwargs...)
-    defaults = (; jac = true, tgrad = true, eval_expression=false, eval_module=@__MODULE__, checkbounds = true)
+@memoize function GTMFunction(; stm=false, structural_simplify=true, name=:GTM, kwargs...)
+    defaults = (; jac = true)
     options  = merge(defaults, kwargs)
     
-    return ODEFunction(
-            GTM; 
-            options...
-    )
+    model = GTM(; stm=stm, structural_simplify=structural_simplify, name=name)
+    return ODEFunction(model; options...)
 end
+
 
 end # module
