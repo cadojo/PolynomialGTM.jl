@@ -1,5 +1,9 @@
+[![Tests](https://github.com/cadojo/PolynomialGTM.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/PolynomialGTM.jl/actions?query=workflow%3ATests)
+[![Docs](https://github.com/cadojo/PolynomialGTM.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/PolynomialGTM.jl/dev)
+
+
 # PolynomialGTM.jl
-An unofficial implementation of publicly available approximated polynomial models for NASA's Generic Transport Model aircraft.
+_An unofficial implementation of publicly available approximated polynomial models for NASA's Generic Transport Model aircraft._
 
 ## Overview
 
