@@ -18,23 +18,43 @@ for the polynomial-approximated GTM dynamics.
 This Julia package extends [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) to provide this 
 polynomial-approximated model of longitudinal GTM flight dynamics to the Julia ecosystem! 
 
+## Installation
+
+You can install `PolynomialGTM` from Julia's General Registry using `Pkg`, or `]install PolynomialGTM` in Julia's REPL.
+
+```julia
+import Pkg
+Pkg.install("PolynomialGTM")
+```
+
 ## Usage
 
-See the [ModelingToolkit documentation](http://mtk.sciml.ai/stable/) for more usage!
+See the [ModelingToolkit documentation](http://mtk.sciml.ai/stable/) for more usage examples!
 
-#### Installation and Startup
 ```julia
-julia> ]install PolynomialGTM
-julia> using PolynomialGTM
+using PolynomialGTM, ModelingToolkit
+
+# Get the model
+model = GTM()
+
+# Get the equations
+equations(model)
+
+# Print the equations to LaTeX
+using Latexify
+latexify(equations(model))
+
+# Get an `ODEFunction` which implements the dynamics
+f = GTMFunction()
+
+# Execute the function
+let x = randn(4), p = randn(2), t = rand()
+  f(x,p,t)
+end
 ```
 
-#### Vector Field (derivative of state vector)
-```julia
-julia> f = eval(generate_function(GTM)[1]) # use [2] for the in-place function
-```
 
-#### Jacobian 
-```julia
-julia> J = eval(generate_jacobian(GTM)[1]) # use [2] for the in-place function
-```
+
+
+
 
