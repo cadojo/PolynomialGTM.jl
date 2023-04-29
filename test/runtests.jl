@@ -3,15 +3,15 @@ module PolynomialGTMTests
 using PolynomialGTM, Test
 
 @testset "Constructors" begin
-   
-    try 
+
+    try
         GTM()
         @test true
     catch e
         @test throw(e)
     end
-    
-    try 
+
+    try
         GTM(; stm=true)
         @test true
     catch e
@@ -21,7 +21,7 @@ using PolynomialGTM, Test
 end
 
 @testset "Functions" begin
-    
+
     try
         f = GTMFunction()
         f(randn(4), randn(2), NaN)
@@ -36,6 +36,15 @@ end
         @test true
     catch e
         @test throw(e)
+    end
+
+end
+
+@testset "Regression" begin
+
+    f = GTMFunction()
+    let u = [0.1, 0.2, 0.3, 0.4], p = [0.1, 0.1], t = NaN
+        @test f(u, p, t) ≈ [-1.522331443175375, 0.7478311441572367, 0.14403160747471513, 0.3]
     end
 
 end
