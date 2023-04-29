@@ -3,34 +3,23 @@
 States (4):
   V(t) [defaults to 29.6]
   α(t) [defaults to 0.15708]
-  θ(t) [defaults to 0.0]
   q(t) [defaults to 0.0]
+  θ(t) [defaults to 0.0]
 Parameters (2):
   δₑ [defaults to 0.0118682]
-  δₜ [defaults to 12.7]
-Incidence matrix:4×9 SparseArrays.SparseMatrixCSC{Symbolics.Num, Int64} with 16 stored entries:
- ×  ×  ×  ×  ×  ⋅  ⋅  ⋅  ⋅
- ×  ×  ×  ×  ⋅  ×  ⋅  ⋅  ⋅
- ⋅  ⋅  ⋅  ×  ⋅  ⋅  ⋅  ×  ⋅
- ×  ×  ⋅  ×  ⋅  ⋅  ⋅  ⋅  ×</code></pre><p>If you&#39;d like to append state transition matrix dynamics, use <code>stm=true</code>. This appends state transition matrix dynamics to the model&#39;s equations  of motion.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; model = GTM(; stm=true)</code><code class="nohighlight hljs ansi" style="display:block;">Model GTMWithSTM with 20 equations
+  δₜ [defaults to 12.7]</code></pre><p>If you&#39;d like to append state transition matrix dynamics, use <code>stm=true</code>. This appends state transition matrix dynamics to the model&#39;s equations  of motion.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; model = GTM(; stm=true)</code><code class="nohighlight hljs ansi" style="display:block;">Model GTMWithSTM with 20 equations
 States (20):
   V(t) [defaults to 29.6]
   α(t) [defaults to 0.15708]
-  Φ[1, 1](t) [defaults to 1.0]
-  Φ[2, 1](t) [defaults to 0.0]
+  q(t) [defaults to 0.0]
+  θ(t) [defaults to 0.0]
 ⋮
 Parameters (2):
   δₑ [defaults to 0.0118682]
-  δₜ [defaults to 12.7]
-Incidence matrix:20×45 SparseArrays.SparseMatrixCSC{Symbolics.Num, Int64} with 124 stored entries:
-⣿⣤⠀⠀⠀⣿⣤⠀⠀⠀⠑⠀⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣿⠀⠛⣤⠀⣿⠀⠛⣤⠀⠀⠀⠀⠀⠑⠀⢄⠀⠀⠀⠀⠀⠀
-⣛⠀⠀⠀⠛⢻⠀⠀⠀⠛⠀⠠⠀⠀⠀⠀⠀⠀⠑⠀⡀⠀⠀
-⣒⠒⣀⠀⠀⢐⠘⢠⠀⠀⠀⠀⠀⠈⠀⠠⠀⠀⠀⠀⠐⡀⠀
-⣒⠀⠀⠒⣀⢐⠀⠀⠘⢠⠀⠀⠀⠀⠀⠀⠀⠈⠀⠠⠀⠐⡀</code></pre><h3 id="Constructing-the-Vector-Field"><a class="docs-heading-anchor" href="#Constructing-the-Vector-Field">Constructing the Vector Field</a><a id="Constructing-the-Vector-Field-1"></a><a class="docs-heading-anchor-permalink" href="#Constructing-the-Vector-Field" title="Permalink"></a></h3><p>As before, you can optionally append state transition matrix dynamics  using <code>stm=true</code>. </p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; f = GTMFunction() # or, with `stm=true`</code><code class="nohighlight hljs ansi" style="display:block;">(::SciMLBase.ODEFunction{true, SciMLBase.AutoSpecialize, ModelingToolkit.var&quot;#f#485&quot;{RuntimeGeneratedFunctions.RuntimeGeneratedFunction{(:ˍ₋arg1, :ˍ₋arg2, :t), ModelingToolkit.var&quot;#_RGF_ModTag&quot;, ModelingToolkit.var&quot;#_RGF_ModTag&quot;, (0x22120e6c, 0x5baa5595, 0xacf794bb, 0x1a78b21f, 0xa153d34c)}, RuntimeGeneratedFunctions.RuntimeGeneratedFunction{(:ˍ₋out, :ˍ₋arg1, :ˍ₋arg2, :t), ModelingToolkit.var&quot;#_RGF_ModTag&quot;, ModelingToolkit.var&quot;#_RGF_ModTag&quot;, (0x15753c83, 0x532791ee, 0x5abdcb2f, 0xda748ab7, 0xd1a14855)}}, LinearAlgebra.UniformScaling{Bool}, Nothing, Nothing, ModelingToolkit.var&quot;#_jac#489&quot;{RuntimeGeneratedFunctions.RuntimeGeneratedFunction{(:ˍ₋arg1, :ˍ₋arg2, :t), ModelingToolkit.var&quot;#_RGF_ModTag&quot;, ModelingToolkit.var&quot;#_RGF_ModTag&quot;, (0x144c8dd5, 0xbe34346f, 0xaf5c6418, 0x65b2beac, 0x790c8209)}, RuntimeGeneratedFunctions.RuntimeGeneratedFunction{(:ˍ₋out, :ˍ₋arg1, :ˍ₋arg2, :t), ModelingToolkit.var&quot;#_RGF_ModTag&quot;, ModelingToolkit.var&quot;#_RGF_ModTag&quot;, (0xf46685cc, 0x68e57f7a, 0xa1ac6fc6, 0xcbbc4401, 0x5ca99769)}}, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Vector{Symbol}, Symbol, Vector{Symbol}, ModelingToolkit.var&quot;#502#generated_observed#493&quot;{Bool, ModelingToolkit.ODESystem, Dict{Any, Any}}, Nothing, ModelingToolkit.ODESystem}) (generic function with 1 method)</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; let u = randn(4), p = randn(2), t = rand()
+  δₜ [defaults to 12.7]</code></pre><h3 id="Constructing-the-Vector-Field"><a class="docs-heading-anchor" href="#Constructing-the-Vector-Field">Constructing the Vector Field</a><a id="Constructing-the-Vector-Field-1"></a><a class="docs-heading-anchor-permalink" href="#Constructing-the-Vector-Field" title="Permalink"></a></h3><p>As before, you can optionally append state transition matrix dynamics  using <code>stm=true</code>. </p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; f = GTMFunction() # or, with `stm=true`</code><code class="nohighlight hljs ansi" style="display:block;">(::SciMLBase.ODEFunction{true, SciMLBase.AutoSpecialize, ModelingToolkit.var&quot;#f#485&quot;{RuntimeGeneratedFunctions.RuntimeGeneratedFunction{(:ˍ₋arg1, :ˍ₋arg2, :t), ModelingToolkit.var&quot;#_RGF_ModTag&quot;, ModelingToolkit.var&quot;#_RGF_ModTag&quot;, (0x6ca97c33, 0xd40257af, 0x64917874, 0xade01700, 0x69e8b91e)}, RuntimeGeneratedFunctions.RuntimeGeneratedFunction{(:ˍ₋out, :ˍ₋arg1, :ˍ₋arg2, :t), ModelingToolkit.var&quot;#_RGF_ModTag&quot;, ModelingToolkit.var&quot;#_RGF_ModTag&quot;, (0xc3d5cad2, 0xeaf05b4e, 0x21533ad9, 0xfe1677ce, 0xcde7f4ad)}}, LinearAlgebra.UniformScaling{Bool}, Nothing, Nothing, ModelingToolkit.var&quot;#_jac#489&quot;{RuntimeGeneratedFunctions.RuntimeGeneratedFunction{(:ˍ₋arg1, :ˍ₋arg2, :t), ModelingToolkit.var&quot;#_RGF_ModTag&quot;, ModelingToolkit.var&quot;#_RGF_ModTag&quot;, (0x91e223d7, 0x98cefc1b, 0x4699cad3, 0x34455be0, 0x0abdbaff)}, RuntimeGeneratedFunctions.RuntimeGeneratedFunction{(:ˍ₋out, :ˍ₋arg1, :ˍ₋arg2, :t), ModelingToolkit.var&quot;#_RGF_ModTag&quot;, ModelingToolkit.var&quot;#_RGF_ModTag&quot;, (0xf09e10aa, 0x33c6b624, 0x635b2a50, 0x726d352d, 0x69e7e95b)}}, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Vector{Symbol}, Symbol, Vector{Symbol}, ModelingToolkit.var&quot;#502#generated_observed#493&quot;{Bool, ModelingToolkit.ODESystem, Dict{Any, Any}}, Nothing, ModelingToolkit.ODESystem}) (generic function with 1 method)</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; let u = randn(4), p = randn(2), t = rand()
            f(u,p,t)
        end</code><code class="nohighlight hljs ansi" style="display:block;">4-element Vector{Float64}:
- -4.650654916531814
- -1.4858673760188559
- -0.8851120278619962
-  0.18615912345896496</code></pre></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="docstrings/">Docstrings »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.7 on <span class="colophon-date" title="Thursday 27 April 2023 04:41">Thursday 27 April 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  6.006490602459718
+ -0.9091825339300151
+  0.04127060510361583
+ -1.2929452478218963</code></pre></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="docstrings/">Docstrings »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.7 on <span class="colophon-date" title="Saturday 29 April 2023 04:09">Saturday 29 April 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
