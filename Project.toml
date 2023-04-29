@@ -1,7 +1,7 @@
 name = "PolynomialGTM"
 uuid = "d0486fca-abc3-4e94-983c-1d27790b80a4"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "1.1.0"
+version = "1.2.0"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
