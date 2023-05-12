@@ -165,7 +165,7 @@ model = GTM()
     # state variables to our state vector, and append default
     # values (the identity matrix) to the defaults field!
     if stm
-        @variables Φ[1:4, 1:4](t)
+        @variables (Φ(t))[1:4, 1:4]
         Φ = Symbolics.scalarize(Φ)
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), x)
 
