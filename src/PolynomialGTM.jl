@@ -219,8 +219,8 @@ end
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
 
-    model = GTM(; stm=stm, name=name)
-    return ODEFunction(model; options...)
+    model = complete(GTM(; stm=stm, name=name); split=false)
+    return ODEFunction(model, unknowns(model), ModelingToolkit.parameters(model); options...)
 end
 
 
