@@ -13,7 +13,7 @@ Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 [compat]
 DocStringExtensions = "0.8, 0.9"
 Memoize = "0.4"
-ModelingToolkit = "~9.3"
+ModelingToolkit = "~9.3, 9"
 Symbolics = "5"
 julia = "1"
 
