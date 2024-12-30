@@ -1,3 +1,0 @@
-[submodule "workflows"]
-	path = .github/workflows
-	url = https://github.com/cadojo/github-julia
