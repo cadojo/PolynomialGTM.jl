@@ -14,7 +14,7 @@ Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 DocStringExtensions = "0.8, 0.9"
 Memoize = "0.4"
 ModelingToolkit = "~9.3"
-Symbolics = "5"
+Symbolics = "5, 6"
 julia = "1"
 
 [extras]
